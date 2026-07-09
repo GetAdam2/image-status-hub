@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Scale, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import ministryLogo from "@/assets/ministry-logo.png.asset.json";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -64,10 +65,8 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4 py-10">
       <div className="w-full max-w-md">
         <div className="mb-6 flex flex-col items-center text-center">
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Scale className="h-6 w-6" />
-          </div>
-          <h1 className="text-xl font-semibold">Ministry of Revenue</h1>
+          <img src={ministryLogo.url} alt="Ministry of Revenues logo" className="mb-3 h-20 w-20 rounded-full object-contain" />
+          <h1 className="text-xl font-semibold">Ministry of Revenues</h1>
           <p className="text-sm text-muted-foreground">Letter Case Tracker</p>
         </div>
 

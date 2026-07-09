@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Plus, Search, Pencil, Trash2, CheckCircle2, Circle, Scale, LogOut } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, CheckCircle2, Circle, LogOut } from "lucide-react";
+import ministryLogo from "@/assets/ministry-logo.png.asset.json";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -127,11 +128,9 @@ export function CaseTracker() {
       <header className="border-b bg-card">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Scale className="h-5 w-5" />
-            </div>
+            <img src={ministryLogo.url} alt="Ministry of Revenues logo" className="h-12 w-12 rounded-full object-contain" />
             <div>
-              <h1 className="text-lg font-semibold leading-tight">Ministry of Revenue</h1>
+              <h1 className="text-lg font-semibold leading-tight">Ministry of Revenues</h1>
               <p className="text-xs text-muted-foreground">Letter Case Tracker</p>
             </div>
           </div>
