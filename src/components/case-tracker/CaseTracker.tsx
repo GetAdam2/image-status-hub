@@ -22,7 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CaseFormDialog, type CaseRow } from "./CaseFormDialog";
+import { type CaseRow } from "./CaseFormDialog";
 
 type Filter = "all" | "open" | "closed";
 
@@ -31,8 +31,6 @@ export function CaseTracker() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
-  const [editing, setEditing] = useState<CaseRow | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [profile, setProfile] = useState<{ full_name: string | null; department: string | null } | null>(null);
 
@@ -141,13 +139,8 @@ export function CaseTracker() {
                 <p className="text-xs text-muted-foreground">{profile.department || "—"}</p>
               </div>
             )}
-            <Button
-              onClick={() => {
-                setEditing(null);
-                setDialogOpen(true);
-              }}
-            >
-              <Plus className="mr-2 h-4 w-4" /> New Case
+            <Button onClick={() => navigate({ to: "/register-letter" })}>
+              <Plus className="mr-2 h-4 w-4" /> Register Letter
             </Button>
             <Button variant="outline" size="icon" onClick={signOut} title="Sign out">
               <LogOut className="h-4 w-4" />
@@ -239,10 +232,12 @@ export function CaseTracker() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => {
-                              setEditing(c);
-                              setDialogOpen(true);
-                            }}
+                            onClick={() =>
+                              navigate({
+                                to: "/register-letter",
+                                search: { id: c.id },
+                              })
+                            }
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
@@ -263,13 +258,6 @@ export function CaseTracker() {
           </CardContent>
         </Card>
       </main>
-
-      <CaseFormDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        initial={editing}
-        onSaved={() => qc.invalidateQueries({ queryKey: ["cases"] })}
-      />
 
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent>
