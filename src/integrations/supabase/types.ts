@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cases: {
+        Row: {
+          case_number: string
+          closed_date: string | null
+          created_at: string
+          defendant_address: string | null
+          defendant_name: string | null
+          id: string
+          notes: string | null
+          opened_date: string
+          plaintiff_address: string | null
+          plaintiff_name: string | null
+          status: Database["public"]["Enums"]["case_status"]
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          case_number: string
+          closed_date?: string | null
+          created_at?: string
+          defendant_address?: string | null
+          defendant_name?: string | null
+          id?: string
+          notes?: string | null
+          opened_date?: string
+          plaintiff_address?: string | null
+          plaintiff_name?: string | null
+          status?: Database["public"]["Enums"]["case_status"]
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          case_number?: string
+          closed_date?: string | null
+          created_at?: string
+          defendant_address?: string | null
+          defendant_name?: string | null
+          id?: string
+          notes?: string | null
+          opened_date?: string
+          plaintiff_address?: string | null
+          plaintiff_name?: string | null
+          status?: Database["public"]["Enums"]["case_status"]
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +70,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      case_status: "open" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +197,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      case_status: ["open", "closed"],
+    },
   },
 } as const
