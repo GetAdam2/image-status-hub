@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Plus, Search, Pencil, Trash2, CheckCircle2, Circle, Scale } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, CheckCircle2, Circle, Scale, LogOut } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -26,11 +27,32 @@ type Filter = "all" | "open" | "closed";
 
 export function CaseTracker() {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
   const [editing, setEditing] = useState<CaseRow | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [profile, setProfile] = useState<{ full_name: string | null; department: string | null } | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: p } = await supabase
+        .from("profiles")
+        .select("full_name, department")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      setProfile(p ?? { full_name: null, department: null });
+    });
+  }, []);
+
+  const signOut = async () => {
+    await qc.cancelQueries();
+    qc.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  };
 
   const { data: cases = [], isLoading } = useQuery({
     queryKey: ["cases"],
@@ -103,24 +125,35 @@ export function CaseTracker() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Scale className="h-5 w-5" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold">Case Tracker</h1>
-              <p className="text-xs text-muted-foreground">Manage plaintiff & defendant cases</p>
+              <h1 className="text-lg font-semibold leading-tight">Ministry of Revenue</h1>
+              <p className="text-xs text-muted-foreground">Letter Case Tracker</p>
             </div>
           </div>
-          <Button
-            onClick={() => {
-              setEditing(null);
-              setDialogOpen(true);
-            }}
-          >
-            <Plus className="mr-2 h-4 w-4" /> New Case
-          </Button>
+          <div className="flex items-center gap-3">
+            {profile && (
+              <div className="hidden text-right sm:block">
+                <p className="text-sm font-medium">{profile.full_name || "Staff"}</p>
+                <p className="text-xs text-muted-foreground">{profile.department || "—"}</p>
+              </div>
+            )}
+            <Button
+              onClick={() => {
+                setEditing(null);
+                setDialogOpen(true);
+              }}
+            >
+              <Plus className="mr-2 h-4 w-4" /> New Case
+            </Button>
+            <Button variant="outline" size="icon" onClick={signOut} title="Sign out">
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </header>
 

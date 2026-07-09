@@ -1,10 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { CaseTracker } from "@/components/case-tracker/CaseTracker";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
 });
-
-function Index() {
-  return <CaseTracker />;
-}

@@ -29,6 +29,7 @@ export type Database = {
           status: Database["public"]["Enums"]["case_status"]
           subject: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           case_number: string
@@ -44,6 +45,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["case_status"]
           subject?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           case_number?: string
@@ -58,6 +60,31 @@ export type Database = {
           plaintiff_name?: string | null
           status?: Database["public"]["Enums"]["case_status"]
           subject?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          full_name?: string | null
+          id?: string
           updated_at?: string
         }
         Relationships: []
