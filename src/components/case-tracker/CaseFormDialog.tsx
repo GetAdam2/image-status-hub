@@ -23,12 +23,22 @@ import {
 } from "@/components/ui/select";
 
 export type CaseStatus = "open" | "closed";
+export type LetterType = "incoming" | "outgoing";
 
 export type CaseRow = {
   id: string;
   case_number: string;
   opened_date: string;
   closed_date: string | null;
+  registration_date: string;
+  letter_type: LetterType;
+  letter_date: string | null;
+  sender_name: string | null;
+  sender_office: string | null;
+  recipient_name: string | null;
+  recipient_office: string | null;
+  file_reference: string | null;
+  remarks: string | null;
   defendant_name: string | null;
   defendant_address: string | null;
   plaintiff_name: string | null;
@@ -42,6 +52,15 @@ export type CaseRow = {
 
 type FormState = {
   case_number: string;
+  registration_date: string;
+  letter_type: LetterType;
+  letter_date: string;
+  sender_name: string;
+  sender_office: string;
+  recipient_name: string;
+  recipient_office: string;
+  file_reference: string;
+  remarks: string;
   opened_date: string;
   closed_date: string;
   plaintiff_name: string;
@@ -55,6 +74,15 @@ type FormState = {
 
 const empty = (): FormState => ({
   case_number: "",
+  registration_date: new Date().toISOString().slice(0, 10),
+  letter_type: "incoming",
+  letter_date: "",
+  sender_name: "",
+  sender_office: "",
+  recipient_name: "",
+  recipient_office: "",
+  file_reference: "",
+  remarks: "",
   opened_date: new Date().toISOString().slice(0, 10),
   closed_date: "",
   plaintiff_name: "",
@@ -84,6 +112,15 @@ export function CaseFormDialog({
     if (initial) {
       setForm({
         case_number: initial.case_number,
+        registration_date: initial.registration_date,
+        letter_type: initial.letter_type,
+        letter_date: initial.letter_date ?? "",
+        sender_name: initial.sender_name ?? "",
+        sender_office: initial.sender_office ?? "",
+        recipient_name: initial.recipient_name ?? "",
+        recipient_office: initial.recipient_office ?? "",
+        file_reference: initial.file_reference ?? "",
+        remarks: initial.remarks ?? "",
         opened_date: initial.opened_date,
         closed_date: initial.closed_date ?? "",
         plaintiff_name: initial.plaintiff_name ?? "",
@@ -104,6 +141,15 @@ export function CaseFormDialog({
       if (!form.case_number.trim()) throw new Error("Case number is required");
       const basePayload = {
         case_number: form.case_number.trim(),
+        registration_date: form.registration_date,
+        letter_type: form.letter_type,
+        letter_date: form.letter_date || null,
+        sender_name: form.sender_name || null,
+        sender_office: form.sender_office || null,
+        recipient_name: form.recipient_name || null,
+        recipient_office: form.recipient_office || null,
+        file_reference: form.file_reference || null,
+        remarks: form.remarks || null,
         opened_date: form.opened_date,
         closed_date: form.closed_date || null,
         plaintiff_name: form.plaintiff_name || null,
@@ -145,8 +191,26 @@ export function CaseFormDialog({
         </DialogHeader>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Case Number *">
+          <Field label="Registration ID (Case Number) *">
             <Input value={form.case_number} onChange={(e) => set("case_number", e.target.value)} />
+          </Field>
+          <Field label="Registration Date">
+            <Input type="date" value={form.registration_date} onChange={(e) => set("registration_date", e.target.value)} />
+          </Field>
+          <Field label="Letter Type">
+            <Select value={form.letter_type} onValueChange={(v) => set("letter_type", v as LetterType)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="incoming">Incoming (ገቢ ደብዳቤ)</SelectItem>
+                <SelectItem value="outgoing">Outgoing (ወጪ ደብዳቤ)</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field label="Letter Date">
+            <Input type="date" value={form.letter_date} onChange={(e) => set("letter_date", e.target.value)} />
+          </Field>
+          <Field label="File Reference">
+            <Input value={form.file_reference} onChange={(e) => set("file_reference", e.target.value)} placeholder="e.g. MoR/2024/001" />
           </Field>
           <Field label="Status">
             <Select value={form.status} onValueChange={(v) => set("status", v as CaseStatus)}>
@@ -163,6 +227,18 @@ export function CaseFormDialog({
           <Field label="Closed Date">
             <Input type="date" value={form.closed_date} onChange={(e) => set("closed_date", e.target.value)} />
           </Field>
+          <Field label="Sender Name">
+            <Input value={form.sender_name} onChange={(e) => set("sender_name", e.target.value)} />
+          </Field>
+          <Field label="Sender Office">
+            <Input value={form.sender_office} onChange={(e) => set("sender_office", e.target.value)} />
+          </Field>
+          <Field label="Recipient Name">
+            <Input value={form.recipient_name} onChange={(e) => set("recipient_name", e.target.value)} />
+          </Field>
+          <Field label="Recipient Office">
+            <Input value={form.recipient_office} onChange={(e) => set("recipient_office", e.target.value)} />
+          </Field>
           <Field label="Plaintiff Name">
             <Input value={form.plaintiff_name} onChange={(e) => set("plaintiff_name", e.target.value)} />
           </Field>
@@ -178,6 +254,11 @@ export function CaseFormDialog({
           <div className="sm:col-span-2">
             <Field label="Subject">
               <Input value={form.subject} onChange={(e) => set("subject", e.target.value)} />
+            </Field>
+          </div>
+          <div className="sm:col-span-2">
+            <Field label="Remarks">
+              <Textarea rows={2} value={form.remarks} onChange={(e) => set("remarks", e.target.value)} />
             </Field>
           </div>
           <div className="sm:col-span-2">
