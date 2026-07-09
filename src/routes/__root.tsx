@@ -86,6 +86,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Ministry of Revenue — Letter Case Tracker" },
+      { name: "twitter:description", content: "Internal letter case tracker for the Ministry of Revenue." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fde1682e-86ce-4e4d-ae2b-8284cb433dd9/id-preview-0ee77eed--90bfb0a6-167f-4d42-b03f-7f6bf107fa5e.lovable.app-1783585637889.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fde1682e-86ce-4e4d-ae2b-8284cb433dd9/id-preview-0ee77eed--90bfb0a6-167f-4d42-b03f-7f6bf107fa5e.lovable.app-1783585637889.png" },
     ],
     links: [
       {
