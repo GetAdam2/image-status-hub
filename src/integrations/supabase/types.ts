@@ -16,75 +16,114 @@ export type Database = {
     Tables: {
       cases: {
         Row: {
+          acceptance_date: string | null
+          approving_officer: string | null
+          assigned_department: string | null
+          attachment_name: string | null
+          attachment_url: string | null
           case_number: string
           closed_date: string | null
           created_at: string
           defendant_address: string | null
           defendant_name: string | null
+          description: string | null
           file_reference: string | null
           id: string
           letter_date: string | null
+          letter_reference_number: string | null
           letter_type: Database["public"]["Enums"]["letter_type"]
           notes: string | null
           opened_date: string
           plaintiff_address: string | null
           plaintiff_name: string | null
+          received_date: string | null
           recipient_name: string | null
           recipient_office: string | null
           registration_date: string
           remarks: string | null
+          responsible_person: string | null
           sender_name: string | null
           sender_office: string | null
+          sender_organization: string | null
+          serial_number: string | null
+          signature_file_url: string | null
+          signature_text: string | null
           status: Database["public"]["Enums"]["case_status"]
           subject: string | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
+          acceptance_date?: string | null
+          approving_officer?: string | null
+          assigned_department?: string | null
+          attachment_name?: string | null
+          attachment_url?: string | null
           case_number: string
           closed_date?: string | null
           created_at?: string
           defendant_address?: string | null
           defendant_name?: string | null
+          description?: string | null
           file_reference?: string | null
           id?: string
           letter_date?: string | null
+          letter_reference_number?: string | null
           letter_type?: Database["public"]["Enums"]["letter_type"]
           notes?: string | null
           opened_date?: string
           plaintiff_address?: string | null
           plaintiff_name?: string | null
+          received_date?: string | null
           recipient_name?: string | null
           recipient_office?: string | null
           registration_date?: string
           remarks?: string | null
+          responsible_person?: string | null
           sender_name?: string | null
           sender_office?: string | null
+          sender_organization?: string | null
+          serial_number?: string | null
+          signature_file_url?: string | null
+          signature_text?: string | null
           status?: Database["public"]["Enums"]["case_status"]
           subject?: string | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
+          acceptance_date?: string | null
+          approving_officer?: string | null
+          assigned_department?: string | null
+          attachment_name?: string | null
+          attachment_url?: string | null
           case_number?: string
           closed_date?: string | null
           created_at?: string
           defendant_address?: string | null
           defendant_name?: string | null
+          description?: string | null
           file_reference?: string | null
           id?: string
           letter_date?: string | null
+          letter_reference_number?: string | null
           letter_type?: Database["public"]["Enums"]["letter_type"]
           notes?: string | null
           opened_date?: string
           plaintiff_address?: string | null
           plaintiff_name?: string | null
+          received_date?: string | null
           recipient_name?: string | null
           recipient_office?: string | null
           registration_date?: string
           remarks?: string | null
+          responsible_person?: string | null
           sender_name?: string | null
           sender_office?: string | null
+          sender_organization?: string | null
+          serial_number?: string | null
+          signature_file_url?: string | null
+          signature_text?: string | null
           status?: Database["public"]["Enums"]["case_status"]
           subject?: string | null
           updated_at?: string
@@ -124,7 +163,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      case_status: "open" | "closed"
+      case_status:
+        | "open"
+        | "closed"
+        | "under_review"
+        | "assigned"
+        | "in_progress"
+        | "waiting_approval"
+        | "approved"
       letter_type: "incoming" | "outgoing"
     }
     CompositeTypes: {
@@ -253,7 +299,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      case_status: ["open", "closed"],
+      case_status: [
+        "open",
+        "closed",
+        "under_review",
+        "assigned",
+        "in_progress",
+        "waiting_approval",
+        "approved",
+      ],
       letter_type: ["incoming", "outgoing"],
     },
   },
