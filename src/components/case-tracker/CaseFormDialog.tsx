@@ -102,7 +102,7 @@ export function CaseFormDialog({
   const save = useMutation({
     mutationFn: async () => {
       if (!form.case_number.trim()) throw new Error("Case number is required");
-      const payload = {
+      const basePayload = {
         case_number: form.case_number.trim(),
         opened_date: form.opened_date,
         closed_date: form.closed_date || null,
@@ -115,10 +115,14 @@ export function CaseFormDialog({
         status: form.status,
       };
       if (initial) {
-        const { error } = await supabase.from("cases").update(payload).eq("id", initial.id);
+        const { error } = await supabase.from("cases").update(basePayload).eq("id", initial.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("cases").insert(payload);
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        if (userError || !userData.user) throw new Error("You must be signed in");
+        const { error } = await supabase
+          .from("cases")
+          .insert({ ...basePayload, user_id: userData.user.id });
         if (error) throw error;
       }
     },
