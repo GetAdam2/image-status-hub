@@ -21,11 +21,20 @@ export type Database = {
           created_at: string
           defendant_address: string | null
           defendant_name: string | null
+          file_reference: string | null
           id: string
+          letter_date: string | null
+          letter_type: Database["public"]["Enums"]["letter_type"]
           notes: string | null
           opened_date: string
           plaintiff_address: string | null
           plaintiff_name: string | null
+          recipient_name: string | null
+          recipient_office: string | null
+          registration_date: string
+          remarks: string | null
+          sender_name: string | null
+          sender_office: string | null
           status: Database["public"]["Enums"]["case_status"]
           subject: string | null
           updated_at: string
@@ -37,11 +46,20 @@ export type Database = {
           created_at?: string
           defendant_address?: string | null
           defendant_name?: string | null
+          file_reference?: string | null
           id?: string
+          letter_date?: string | null
+          letter_type?: Database["public"]["Enums"]["letter_type"]
           notes?: string | null
           opened_date?: string
           plaintiff_address?: string | null
           plaintiff_name?: string | null
+          recipient_name?: string | null
+          recipient_office?: string | null
+          registration_date?: string
+          remarks?: string | null
+          sender_name?: string | null
+          sender_office?: string | null
           status?: Database["public"]["Enums"]["case_status"]
           subject?: string | null
           updated_at?: string
@@ -53,11 +71,20 @@ export type Database = {
           created_at?: string
           defendant_address?: string | null
           defendant_name?: string | null
+          file_reference?: string | null
           id?: string
+          letter_date?: string | null
+          letter_type?: Database["public"]["Enums"]["letter_type"]
           notes?: string | null
           opened_date?: string
           plaintiff_address?: string | null
           plaintiff_name?: string | null
+          recipient_name?: string | null
+          recipient_office?: string | null
+          registration_date?: string
+          remarks?: string | null
+          sender_name?: string | null
+          sender_office?: string | null
           status?: Database["public"]["Enums"]["case_status"]
           subject?: string | null
           updated_at?: string
@@ -98,6 +125,7 @@ export type Database = {
     }
     Enums: {
       case_status: "open" | "closed"
+      letter_type: "incoming" | "outgoing"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -226,6 +254,7 @@ export const Constants = {
   public: {
     Enums: {
       case_status: ["open", "closed"],
+      letter_type: ["incoming", "outgoing"],
     },
   },
 } as const
