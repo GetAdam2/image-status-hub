@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Save, Pencil, Upload, ArrowLeft, FileText, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { useCurrentRole } from "@/hooks/useCurrentRole";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -89,9 +90,12 @@ function RegisterLetterPage() {
   const { id } = useSearch({ from: "/_authenticated/register-letter" });
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { role, isEmployee, canManageCases, canReopen, isLoading: roleLoading } = useCurrentRole();
 
   const [form, setForm] = useState<FormState>(empty());
-  const [readOnly, setReadOnly] = useState<boolean>(!!id);
+  const [readOnly, setReadOnlyState] = useState<boolean>(!!id);
+  const effectiveReadOnly = readOnly || isEmployee;
+  const setReadOnly = setReadOnlyState;
   const [confirmEdit, setConfirmEdit] = useState(false);
   const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
   const [signatureFile, setSignatureFile] = useState<File | null>(null);
@@ -513,7 +517,11 @@ function RegisterLetterPage() {
 
             {/* Actions */}
             <div className="mt-8 flex flex-col-reverse items-center justify-center gap-3 sm:flex-row">
-              {id && readOnly ? (
+              {isEmployee ? (
+                <p className="text-sm text-muted-foreground">
+                  Read-only access — employees can view but not edit records.
+                </p>
+              ) : id && readOnly ? (
                 <Button
                   type="button"
                   onClick={() => setConfirmEdit(true)}
