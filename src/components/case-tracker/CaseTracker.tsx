@@ -180,11 +180,12 @@ export function CaseTracker() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Case #</TableHead>
-                  <TableHead>Plaintiff</TableHead>
-                  <TableHead>Defendant</TableHead>
+                  <TableHead>Serial #</TableHead>
+                  <TableHead>Letter Ref #</TableHead>
+                  <TableHead>Sender Organization</TableHead>
                   <TableHead>Subject</TableHead>
-                  <TableHead>Opened</TableHead>
+                  <TableHead>Received</TableHead>
+                  <TableHead>Department</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -192,24 +193,25 @@ export function CaseTracker() {
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                    <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
                       Loading…
                     </TableCell>
                   </TableRow>
                 ) : filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
-                      No cases yet. Click "New Case" to add one.
+                    <TableCell colSpan={8} className="py-12 text-center text-muted-foreground">
+                      No letters yet. Click "Register Letter" to add one.
                     </TableCell>
                   </TableRow>
                 ) : (
                   filtered.map((c) => (
                     <TableRow key={c.id}>
-                      <TableCell className="font-mono font-medium">{c.case_number}</TableCell>
-                      <TableCell>{c.plaintiff_name ?? "—"}</TableCell>
-                      <TableCell>{c.defendant_name ?? "—"}</TableCell>
+                      <TableCell className="font-mono font-medium">{c.serial_number ?? "—"}</TableCell>
+                      <TableCell className="font-mono">{c.letter_reference_number ?? c.case_number}</TableCell>
+                      <TableCell>{c.sender_organization ?? "—"}</TableCell>
                       <TableCell className="max-w-xs truncate">{c.subject ?? "—"}</TableCell>
-                      <TableCell>{c.opened_date}</TableCell>
+                      <TableCell>{c.received_date ?? c.opened_date}</TableCell>
+                      <TableCell>{c.assigned_department ?? "—"}</TableCell>
                       <TableCell>
                         <Badge variant={c.status === "open" ? "default" : "secondary"}>
                           {c.status}
