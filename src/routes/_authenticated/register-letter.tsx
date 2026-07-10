@@ -269,7 +269,7 @@ function RegisterLetterPage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (!readOnly) save.mutate();
+              if (!effectiveReadOnly) save.mutate();
             }}
             className="p-6 sm:p-8"
           >
@@ -285,7 +285,7 @@ function RegisterLetterPage() {
                   <Input
                     value={form.letter_reference_number}
                     onChange={(e) => set("letter_reference_number", e.target.value)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                     placeholder="e.g. MoR/2026/001"
                     className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
@@ -296,7 +296,7 @@ function RegisterLetterPage() {
                     type="date"
                     value={form.received_date}
                     onChange={(e) => set("received_date", e.target.value)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                     className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </FormField>
@@ -305,7 +305,7 @@ function RegisterLetterPage() {
                   <Input
                     value={form.sender_organization}
                     onChange={(e) => set("sender_organization", e.target.value)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                     placeholder="e.g. Ministry of Finance"
                     className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
@@ -315,7 +315,7 @@ function RegisterLetterPage() {
                   <Input
                     value={form.subject}
                     onChange={(e) => set("subject", e.target.value)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                     className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </FormField>
@@ -325,7 +325,7 @@ function RegisterLetterPage() {
                     rows={5}
                     value={form.description}
                     onChange={(e) => set("description", e.target.value)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                     placeholder="Provide a summary of the letter contents…"
                     className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
@@ -338,7 +338,7 @@ function RegisterLetterPage() {
                   <Select
                     value={form.assigned_department}
                     onValueChange={(v) => set("assigned_department", v)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                   >
                     <SelectTrigger className="rounded-lg">
                       <SelectValue placeholder="Select department" />
@@ -355,7 +355,7 @@ function RegisterLetterPage() {
                   <Select
                     value={form.responsible_person}
                     onValueChange={(v) => set("responsible_person", v)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                   >
                     <SelectTrigger className="rounded-lg">
                       <SelectValue placeholder="Select officer" />
@@ -379,7 +379,7 @@ function RegisterLetterPage() {
                     type="date"
                     value={form.acceptance_date}
                     onChange={(e) => set("acceptance_date", e.target.value)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                     className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </FormField>
@@ -388,7 +388,7 @@ function RegisterLetterPage() {
                   <Select
                     value={form.approving_officer}
                     onValueChange={(v) => set("approving_officer", v)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                   >
                     <SelectTrigger className="rounded-lg">
                       <SelectValue placeholder="Select approver" />
@@ -412,7 +412,7 @@ function RegisterLetterPage() {
                     <Input
                       value={form.signature_text}
                       onChange={(e) => set("signature_text", e.target.value)}
-                      disabled={readOnly}
+                      disabled={effectiveReadOnly}
                       placeholder="Type signature name"
                       className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
@@ -425,7 +425,7 @@ function RegisterLetterPage() {
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        disabled={readOnly}
+                        disabled={effectiveReadOnly}
                         onChange={(e) => setSignatureFile(e.target.files?.[0] ?? null)}
                       />
                     </label>
@@ -436,7 +436,7 @@ function RegisterLetterPage() {
                   <Select
                     value={form.status}
                     onValueChange={(v) => set("status", v)}
-                    disabled={readOnly}
+                    disabled={effectiveReadOnly}
                   >
                     <SelectTrigger className="rounded-lg">
                       <SelectValue />
@@ -458,7 +458,7 @@ function RegisterLetterPage() {
                   rows={3}
                   value={form.remarks}
                   onChange={(e) => set("remarks", e.target.value)}
-                  disabled={readOnly}
+                  disabled={effectiveReadOnly}
                   className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </FormField>
@@ -468,19 +468,19 @@ function RegisterLetterPage() {
                   onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                   onDragLeave={() => setDragOver(false)}
                   onDrop={handleDrop}
-                  onClick={() => !readOnly && fileInputRef.current?.click()}
+                  onClick={() => !effectiveReadOnly && fileInputRef.current?.click()}
                   className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center transition ${
                     dragOver
                       ? "border-blue-500 bg-blue-50"
                       : "border-slate-300 bg-slate-50 hover:bg-slate-100"
-                  } ${readOnly ? "cursor-not-allowed opacity-70" : ""}`}
+                  } ${effectiveReadOnly ? "cursor-not-allowed opacity-70" : ""}`}
                 >
                   <Upload className="mb-2 h-8 w-8 text-slate-500" />
                   {attachmentFile ? (
                     <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
                       <FileText className="h-4 w-4" />
                       {attachmentFile.name}
-                      {!readOnly && (
+                      {!effectiveReadOnly && (
                         <button
                           type="button"
                           onClick={(e) => { e.stopPropagation(); setAttachmentFile(null); }}
