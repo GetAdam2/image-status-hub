@@ -22,7 +22,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { type CaseRow } from "./CaseFormDialog";
+import type { Tables } from "@/integrations/supabase/types";
+type CaseRow = Tables<"cases">;
 
 type Filter = "all" | "open" | "closed";
 
