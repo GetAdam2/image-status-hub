@@ -18,13 +18,24 @@ function AuditPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("case_audit_log")
-        .select("*, cases(serial_number, letter_reference_number, subject), profiles:user_id(full_name)")
+        .select("*, cases(serial_number, letter_reference_number, subject)")
         .order("created_at", { ascending: false })
         .limit(500);
       if (error) throw error;
       return data as any[];
     },
   });
+
+  const { data: profiles = [] } = useQuery({
+    queryKey: ["profiles-min"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("profiles").select("id, full_name");
+      if (error) throw error;
+      return data;
+    },
+  });
+  const nameOf = (id: string | null) =>
+    profiles.find((p) => p.id === id)?.full_name || "—";
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,7 +72,7 @@ function AuditPage() {
                       <TableCell className="whitespace-nowrap text-xs">
                         {new Date(l.created_at).toLocaleString()}
                       </TableCell>
-                      <TableCell>{l.profiles?.full_name || "—"}</TableCell>
+                      <TableCell>{nameOf(l.user_id)}</TableCell>
                       <TableCell><Badge variant="outline">{l.user_role || "—"}</Badge></TableCell>
                       <TableCell><Badge>{l.action}</Badge></TableCell>
                       <TableCell className="text-xs">

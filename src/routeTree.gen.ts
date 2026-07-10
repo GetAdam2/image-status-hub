@@ -16,6 +16,7 @@ import { Route as AuthenticatedRegisterLetterRouteImport } from './routes/_authe
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminDepartmentsRouteImport } from './routes/_authenticated/admin/departments'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -53,12 +54,18 @@ const AuthenticatedAdminDepartmentsRoute =
     path: '/admin/departments',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/admin/audit',
+  path: '/admin/audit',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/register-letter': typeof AuthenticatedRegisterLetterRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/departments': typeof AuthenticatedAdminDepartmentsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
 }
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/register-letter': typeof AuthenticatedRegisterLetterRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/departments': typeof AuthenticatedAdminDepartmentsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
 }
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/register-letter': typeof AuthenticatedRegisterLetterRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/departments': typeof AuthenticatedAdminDepartmentsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
 }
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/register-letter'
+    | '/admin/audit'
     | '/admin/departments'
     | '/admin/users'
   fileRoutesByTo: FileRoutesByTo
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/register-letter'
+    | '/admin/audit'
     | '/admin/departments'
     | '/admin/users'
   id:
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/register-letter'
+    | '/_authenticated/admin/audit'
     | '/_authenticated/admin/departments'
     | '/_authenticated/admin/users'
   fileRoutesById: FileRoutesById
@@ -165,12 +177,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminDepartmentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/admin/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedRegisterLetterRoute: typeof AuthenticatedRegisterLetterRoute
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminDepartmentsRoute: typeof AuthenticatedAdminDepartmentsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
 }
@@ -178,6 +198,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedRegisterLetterRoute: AuthenticatedRegisterLetterRoute,
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminDepartmentsRoute: AuthenticatedAdminDepartmentsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
 }
