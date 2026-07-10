@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Plus, Search, Pencil, Trash2, CheckCircle2, Circle, LogOut } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, CheckCircle2, Circle, LogOut, Users, Building2, ClipboardList } from "lucide-react";
 import ministryLogo from "@/assets/ministry-logo.png.asset.json";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +23,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import type { Tables } from "@/integrations/supabase/types";
+import { useCurrentRole } from "@/hooks/useCurrentRole";
 type CaseRow = Tables<"cases">;
 
 type Filter = "all" | "open" | "closed";
@@ -30,6 +31,7 @@ type Filter = "all" | "open" | "closed";
 export function CaseTracker() {
   const qc = useQueryClient();
   const navigate = useNavigate();
+  const { role, isAdmin, canManageCases, canReopen, canDelete } = useCurrentRole();
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -137,12 +139,31 @@ export function CaseTracker() {
             {profile && (
               <div className="hidden text-right sm:block">
                 <p className="text-sm font-medium">{profile.full_name || "Staff"}</p>
-                <p className="text-xs text-muted-foreground">{profile.department || "—"}</p>
+                <p className="text-xs text-muted-foreground">
+                  {role ? role.replace("_", " ") : "—"}
+                </p>
               </div>
             )}
-            <Button onClick={() => navigate({ to: "/register-letter" })}>
-              <Plus className="mr-2 h-4 w-4" /> Register Letter
-            </Button>
+            {isAdmin && (
+              <>
+                <Button variant="outline" size="sm" onClick={() => navigate({ to: "/admin/users" })}>
+                  <Users className="mr-2 h-4 w-4" /> Users
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => navigate({ to: "/admin/departments" })}>
+                  <Building2 className="mr-2 h-4 w-4" /> Departments
+                </Button>
+              </>
+            )}
+            {(isAdmin || canManageCases) && (
+              <Button variant="outline" size="sm" onClick={() => navigate({ to: "/admin/audit" })}>
+                <ClipboardList className="mr-2 h-4 w-4" /> Audit
+              </Button>
+            )}
+            {canManageCases && (
+              <Button onClick={() => navigate({ to: "/register-letter" })}>
+                <Plus className="mr-2 h-4 w-4" /> Register Letter
+              </Button>
+            )}
             <Button variant="outline" size="icon" onClick={signOut} title="Sign out">
               <LogOut className="h-4 w-4" />
             </Button>
@@ -220,21 +241,24 @@ export function CaseTracker() {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
+                          {canManageCases && (c.status !== "closed" || canReopen) && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              title={c.status === "open" ? "Mark closed" : "Reopen"}
+                              onClick={() => toggleStatus.mutate(c)}
+                            >
+                              {c.status === "open" ? (
+                                <CheckCircle2 className="h-4 w-4" />
+                              ) : (
+                                <Circle className="h-4 w-4" />
+                              )}
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="icon"
-                            title={c.status === "open" ? "Mark closed" : "Reopen"}
-                            onClick={() => toggleStatus.mutate(c)}
-                          >
-                            {c.status === "open" ? (
-                              <CheckCircle2 className="h-4 w-4" />
-                            ) : (
-                              <Circle className="h-4 w-4" />
-                            )}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
+                            title={canManageCases ? "Edit" : "View"}
                             onClick={() =>
                               navigate({
                                 to: "/register-letter",
@@ -244,13 +268,15 @@ export function CaseTracker() {
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setDeleteId(c.id)}
-                          >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
+                          {canDelete && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setDeleteId(c.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>
