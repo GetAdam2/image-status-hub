@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Plus, Search, Pencil, Trash2, CheckCircle2, Circle, LogOut, Users, Building2, ClipboardList } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, CheckCircle2, Circle, LogOut, Users, Building2, ClipboardList, UserPlus } from "lucide-react";
 import ministryLogo from "@/assets/ministry-logo.png.asset.json";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { Tables } from "@/integrations/supabase/types";
 import { useCurrentRole } from "@/hooks/useCurrentRole";
+import { AssignCaseDialog } from "./AssignCaseDialog";
 type CaseRow = Tables<"cases">;
 
 type Filter = "all" | "open" | "closed";
@@ -35,6 +36,7 @@ export function CaseTracker() {
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [assignCase, setAssignCase] = useState<CaseRow | null>(null);
   const [profile, setProfile] = useState<{ full_name: string | null; department: string | null } | null>(null);
 
   useEffect(() => {
@@ -67,6 +69,26 @@ export function CaseTracker() {
       return data as CaseRow[];
     },
   });
+
+  // Realtime: refresh when cases or assignments change (assignees see new work instantly)
+  useEffect(() => {
+    const channel = supabase
+      .channel("cases-rt")
+      .on("postgres_changes", { event: "*", schema: "public", table: "cases" }, () => {
+        qc.invalidateQueries({ queryKey: ["cases"] });
+      })
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "case_assignments" },
+        () => {
+          qc.invalidateQueries({ queryKey: ["cases"] });
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [qc]);
 
   const toggleStatus = useMutation({
     mutationFn: async (c: CaseRow) => {
@@ -255,6 +277,16 @@ export function CaseTracker() {
                               )}
                             </Button>
                           )}
+                          {canManageCases && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              title="Assign"
+                              onClick={() => setAssignCase(c)}
+                            >
+                              <UserPlus className="h-4 w-4" />
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="icon"
@@ -304,6 +336,13 @@ export function CaseTracker() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AssignCaseDialog
+        caseId={assignCase?.id ?? null}
+        caseDepartmentId={assignCase?.department_id ?? null}
+        open={!!assignCase}
+        onOpenChange={(o) => !o && setAssignCase(null)}
+      />
     </div>
   );
 }
